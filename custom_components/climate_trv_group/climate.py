@@ -122,6 +122,7 @@ class ClimateGroup(ClimateEntity):
         self._swing_mode = None
         self._preset_modes = None
         self._preset = None
+        self._trigger_source = None
         self._excluded = excluded
 
     async def async_added_to_hass(self):
@@ -195,6 +196,7 @@ class ClimateGroup(ClimateEntity):
 
     @property
     def current_temperature(self):
+        """Return the sensor temperature."""
         return self._current_temp
 
     @property
@@ -376,9 +378,9 @@ class ClimateGroup(ClimateEntity):
         )
         # end add
 
-        self._current_temp = _reduce_attribute(
-            filtered_states, ATTR_CURRENT_TEMPERATURE
-        )
+        #self._current_temp = _reduce_attribute(
+        #    filtered_states, ATTR_CURRENT_TEMPERATURE
+        #)
 
         _LOGGER.debug(
             f"Target temp: {self._target_temp}; Target temp low: {self._target_temp_low}; Target temp high: {self._target_temp_high}; Current temp: {self._current_temp}"
@@ -455,6 +457,22 @@ class ClimateGroup(ClimateEntity):
             climate.DOMAIN, climate.SERVICE_SET_PRESET_MODE, data, blocking=True
         )
 
+    async def _async_sensor_changed(self, entity_id, old_state, new_state):
+        """Handle temperature changes."""
+        if new_state is None:
+            return
+
+        self._async_update_temp(new_state)
+        self._trigger_source = 'sensor'
+    
+    @callback
+    def _async_update_temp(self, state):
+        """Update thermostat with latest state from sensor."""
+        try:
+            self._current_temp = float(state.state)
+        except ValueError as ex:
+            _LOGGER.debug("%s (%s) - unable to update from sensor: %s",
+                          self.name, self.entity_id, ex)
 
 def _find_state_attributes(states: List[State], key: str) -> Iterator[Any]:
     """Find attributes with matching key from states."""
