@@ -1,0 +1,9 @@
+{
+  "domain": "climate_trv_group",
+  "name": "Climate TRV Group",
+  "version": "0.1.0",
+  "issue_tracker": "https://github.com/jeremiedmns/climate_trv_group/issues",
+  "documentation": "https://raw.githubusercontent.com/jeremiedmns/climate_trv_group/main/README.md",
+  "dependencies": [],
+  "codeowners": ["@jeremiedmns"]
+}
