@@ -25,6 +25,7 @@ from homeassistant.const import (
     CONF_TEMPERATURE_UNIT,
     CONF_ENTITIES,
     CONF_NAME,
+    CONF_SENSOR,
     ATTR_SUPPORTED_FEATURES,
 )
 from homeassistant.core import State, callback
